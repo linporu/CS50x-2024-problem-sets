@@ -1,0 +1,43 @@
+#include <math.h>
+
+// Helper function to calculate the average of surrounding pixels
+RGBTRIPLE getAverageColor(int height, int width, RGBTRIPLE image[height][width], int row, int col, int N) {
+    int sumRed = 0, sumGreen = 0, sumBlue = 0;
+    int count = 0;
+
+    for (int i = row - N; i <= row + N; i++) {
+        for (int j = col - N; j <= col + N; j++) {
+            if (i >= 0 && i < height && j >= 0 && j < width) {
+                sumRed += image[i][j].rgbtRed;
+                sumGreen += image[i][j].rgbtGreen;
+                sumBlue += image[i][j].rgbtBlue;
+                count++;
+            }
+        }
+    }
+
+    RGBTRIPLE avg;
+    avg.rgbtRed = round((float)sumRed / count);
+    avg.rgbtGreen = round((float)sumGreen / count);
+    avg.rgbtBlue = round((float)sumBlue / count);
+
+    return avg;
+}
+
+// Main blur function
+void blur(int height, int width, RGBTRIPLE image[height][width], int N) {
+    // Create a copy of the image
+    RGBTRIPLE copy[height][width];
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            copy[i][j] = image[i][j];
+        }
+    }
+
+    // Apply blur to each pixel
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            image[i][j] = getAverageColor(height, width, copy, i, j, N);
+        }
+    }
+}
