@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+
+    </head>
+
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section" id="multiple-choice">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                <!-- TODO: Add multiple choice question here -->
+                <h3>What's the teacher's name of CS50?</h3>
+                <button id="David">David</button>
+                <button id="Bill">Bill</button>
+                <button id="Ashley">Ashley</button>
+                <button id="Dr.7">Dr.7</button>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <!-- TODO: Add free response question here -->
+                <h3>What's the name of the class?</h3>
+                <input type="text" id="answer-input" placeholder="Type your answer here">
+                <button id="check-answer-btn">Check Answer</button>
+                <div id="feedback"></div>
+            </div>
+        </div>
+        <script>
+            // Check multiple choice question's answer
+            document.querySelectorAll('#multiple-choice button').forEach(button => {
+                button.onclick = function() {
+                    if (button.id === 'David') {
+                        button.classList.add('correct-answer');
+                        button.innerHTML = "Correct!";
+                    } else {
+                        button.classList.add('incorrect-answer');
+                        button.innerHTML = "Incorrect";
+                    }
+                };
+            });
+
+            // Check free response's answer
+            document.getElementById('check-answer-btn').onclick = function() {
+                const userInput = document.getElementById('answer-input').value;
+                const feedback = document.getElementById('feedback');
+
+                if (userInput === 'CS50') {
+                    feedback.textContent = 'Correct!';
+                    feedback.style.color = 'green';
+                } else {
+                    feedback.textContent = 'Incorrect';
+                    feedback.style.color = 'red';
+                }
+            };
+        </script>
+    </body>
+
+</html>
