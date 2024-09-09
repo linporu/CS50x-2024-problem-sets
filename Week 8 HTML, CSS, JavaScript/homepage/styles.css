@@ -1,0 +1,84 @@
+:root {
+    --blue-color: #375BFF;
+    --dark-blue-color: #151E25;
+}
+
+body {
+    background-color: var(--dark-blue-color);
+    color: white;
+    font-family: "Noto Serif TC", serif;
+}
+
+/*Text*/
+
+p {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 400;
+}
+
+p strong {
+    font-weight: 700;
+}
+
+h1 {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 900;
+}
+
+h2 {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 700;
+}
+
+/*Hypertext*/
+
+a {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: var(--blue-color);
+}
+
+a:hover {
+    color: var(--blue-color);
+}
+
+
+
+
+.noto-serif-tc {
+    font-family: "Noto Serif TC", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
+  
+  .noto-serif-tc-200 {
+    font-weight: 200;
+  }
+  
+  .noto-serif-tc-300 {
+    font-weight: 300;
+  }
+  
+  .noto-serif-tc-400 {
+    font-weight: 400;
+  }
+  
+  .noto-serif-tc-500 {
+    font-weight: 500;
+  }
+  
+  .noto-serif-tc-600 {
+    font-weight: 600;
+  }
+  
+  .noto-serif-tc-700 {
+    font-weight: 700;
+  }
+  
+  .noto-serif-tc-800 {
+    font-weight: 800;
+  }
+  
+  .noto-serif-tc-900 {
+    font-weight: 900;
+  }
