@@ -1,23 +1,48 @@
-/* Base Styles */
+/* Root styles */
 :root {
-    /* Default Colors */
+    /* Color variables */
+    --dark-grey-color: #111;
     --blue-color: #375BFF;
     --dark-blue-color: #151E25;
     
-    /* Default Fonts */
+    /* Font variables */
     --default-font: "Noto Serif TC", serif;
 }
 
-/* Global Layout */
+/* Basic layout */
 body {
     font-family: var(--default-font);
     color: white;
-    background-color: var(--dark-blue-color);
+    background-color: var(--dark-grey-color);
+    margin: 0;
+    padding: 0;
+    padding-top: 40px;
 }
 
+.container {
+    width: 80%;
+    max-width: 1360px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
+/* Responsive design */
+@media (max-width: 767.98px) {
+    .container > * {
+        width: 100%;
+        text-align: left;
+    }
+}
 
-/* Link Styles */
+@media (min-width: 768px) {
+    .container > * {
+        text-align: left;
+    }
+}
+
+/* Link styles */
 a {
     color: white;
     text-decoration: underline;
@@ -27,42 +52,34 @@ a {
 
 a:hover {
     color: var(--blue-color);
-    text-decoration: underline;
-    text-decoration-color: var(--blue-color);
 }
 
-/* Paragraph Styles */
+/* Text styles */
 p {
     font-weight: 400;
+    line-height: 1.8;
+    font-size: 12pt;
+    margin-bottom: 10px;
 }
 
 p strong {
-    font-weight: 700; /* Bold Text */
+    font-weight: 700;
 }
 
-/* Heading Styles */
+/* Heading styles */
 h1 {
     font-weight: 900;
+    margin-bottom: 20px;
+    font-size: 28pt;
 }
 
 h2 {
     font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 22pt;
 }
 
-/* Button Styles */
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: var(--blue-color);
-    color: white;
-}
-
-/* Fonts */
+/* Font classes */
 .noto-serif-tc {
     font-family: "Noto Serif TC", serif;
     font-optical-sizing: auto;
@@ -76,3 +93,133 @@ h2 {
 .noto-serif-tc-700 { font-weight: 700; }
 .noto-serif-tc-800 { font-weight: 800; }
 .noto-serif-tc-900 { font-weight: 900; }
+
+/* Navigation bar */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+
+.navbar .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar li {
+    margin-left: 20px;
+}
+
+.navbar a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.3s ease;
+    font-size: 12pt;
+}
+
+.navbar a:hover, .navbar a.active {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* Responsive navbar */
+@media (max-width: 600px) {
+    .navbar .container {
+        justify-content: center;
+    }
+
+    .navbar ul {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .navbar li {
+        margin: 0;
+    }
+}
+
+/* Main content area */
+.main-container {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+.left-column {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 60px;
+}
+
+.profile-image {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: cover;
+    margin-top: 40px; 
+}
+
+.content-wrapper {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.columns-container {
+    display: flex;
+    flex: 1;
+}
+
+.center-column, .right-column {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 60px;
+    height: auto;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--blue-color);
+    margin-top: 20px;
+}
+
+/* Responsive main content area */
+@media (max-width: 1024px) {
+    .main-container {
+        flex-direction: column;
+    }
+    
+    .left-column, .center-column, .right-column {
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container, .content-wrapper {
+        flex-direction: column;
+    }
+    
+    .left-column, .center-column, .right-column {
+        flex: none;
+    }
+}
