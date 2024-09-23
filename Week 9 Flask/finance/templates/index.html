@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <h1>Portfolio</h1>
+    <h2>
+        Total asset value
+    </h2>
+    <p>
+        Total asset value: {{ total_asset_value }}
+    </p>
+    <h2>
+        Total stock value
+    </h2>
+    <p>
+        Total stock value: {{ total_stock_value }}
+        Percentage: {{ total_stock_percentage }}
+    </p>
+    <table>
+        <tr>
+            {% for header in headers %}
+                <th>
+                    {{ header }}
+                </th>
+            {% endfor %}
+        </tr>
+    {% for stock in stocks %}
+        <tr>
+            <td>
+                {{ stock_name }}
+            </td>
+            <td>
+                {{ share }}
+            </td>
+            <td>
+                {{ price }}
+            </td>
+            <td>
+                {{ stock_value }}
+            </td>
+            <td>
+                {{ stock_percentage }}
+            </td>
+        </tr>
+    {% endfor %}
+
+    </table>
+    <h2>
+        Cash value
+    </h2>
+    <p>
+        Remaining cash: {{ cash_value }}
+        Percentage: {{ cash_percentage }}
+    </p>
+
+{% endblock %}
