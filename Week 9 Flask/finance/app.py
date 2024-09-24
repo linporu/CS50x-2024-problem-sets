@@ -1,10 +1,8 @@
 import os
-
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-
 from helpers import apology, login_required, lookup, usd
 
 # Configure application
@@ -35,6 +33,20 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
+
+    # 暫時把所有變數定義為 0
+    account_value = 0
+    total_stock_value = 0
+    total_stock_percentage = 0
+    headers = []
+    stocks = []
+    stock_name = ""
+    stock_value = 0
+    stock_percentage = 0
+    share = 0
+    price = 0
+    cash_value = 0
+    cash_percentage = 0
 
     return render_template("index.html", account_value=account_value, total_stock_value=total_stock_value, total_stock_percentage=total_stock_percentage, headers=headers, stocks=stocks, stock_name=stock_name, share=share, price=price, stock_value=stock_value, stock_percentage=stock_percentage, cash_value=cash_value, cash_percentage=cash_percentage)
 
@@ -113,7 +125,27 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    return apology("TODO")
+    if request.method == "POST":
+        if not request.form.get("username"):
+            return apology("must provide username", 403)
+        elif not request.form.get("password"):
+            return apology("must provide password", 403)
+        elif not request.form.get("confirmation"):
+            return apology("must provide confirmation", 403)
+        elif request.form.get("password") != request.form.get("confirmation"):
+            return apology("passwords do not match", 403)
+        
+        hash = generate_password_hash(request.form.get("password"))
+        
+        try:
+            db.execute("INSERT INTO users (username, hash, registered_at) VALUES (?, ?, CURRENT_TIMESTAMP)", request.form.get("username"), hash)
+            return redirect("/login")
+        except:
+            return apology("username already exists", 403)
+    else:
+        return render_template("register.html")
+
+
 
 
 @app.route("/sell", methods=["GET", "POST"])
