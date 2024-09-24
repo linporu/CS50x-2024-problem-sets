@@ -36,7 +36,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
 
-    return render_template("index.html", total_asset_value=total_asset_value, total_stock_value=total_stock_value, total_stock_percentage=total_stock_percentage, headers=headers, stocks=stocks, stock_name=stock_name, share=share, price=price, stock_value=stock_value, stock_percentage=stock_percentage, cash_value=cash_value, cash_percentage=cash_percentage)
+    return render_template("index.html", account_value=account_value, total_stock_value=total_stock_value, total_stock_percentage=total_stock_percentage, headers=headers, stocks=stocks, stock_name=stock_name, share=share, price=price, stock_value=stock_value, stock_percentage=stock_percentage, cash_value=cash_value, cash_percentage=cash_percentage)
 
 
 @app.route("/buy", methods=["GET", "POST"])
