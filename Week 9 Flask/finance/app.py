@@ -55,7 +55,53 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+
+        # Check symbol
+        if not request.form.get("symbol"):
+            return apology("must provide stock symbol", 403)
+        if not lookup(request.form.get("symbol")):
+            return apology("Invalid symbol", 403)
+        
+        # Check shares
+        if not request.form.get("shares"):
+            return apology("Must provide shares")
+        try:
+            int(request.form.get("shares"))
+        except ValueError:
+            return apology("Shares must be an integer")
+
+        # Set variables
+        user_id = session["user_id"]
+        stock_bought = lookup(request.form.get("symbol"))
+        symbol = stock_bought["symbol"]
+        quantity = int(request.form.get("shares"))
+        price = stock_bought["price"]
+        total_amount = price * quantity
+        cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
+
+        # Check cash is enough
+        if cash < total_amount:
+            return apology("Cash is not enough")
+
+        # Record transaction
+        db.execute("INSERT INTO transactions (user_id, transaction_type, symbol, quantity, price, total_amount) VALUES (?, ?, ?, ?, ?, ?)", 
+                   user_id, "BUY", symbol, quantity, price, total_amount)
+        
+        # Update cash
+        db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_amount, user_id)
+       
+        # Update position
+        # Check symbol is existing first
+        existing = db.execute("SELECT * FROM positions WHERE user_id = ? AND symbol = ?", user_id, symbol)
+        if existing:
+            db.execute("UPDATE positions SET quantity = quantity + ? WHERE user_id = ? AND symbol = ?", quantity, user_id, symbol)
+        else:
+            db.execute("INSERT INTO positions (user_id, symbol, quantity) VALUES (?, ?, ?)", user_id, symbol, quantity)
+
+        return redirect("/")
+    else:
+        return render_template("buy.html")
 
 
 @app.route("/history")
