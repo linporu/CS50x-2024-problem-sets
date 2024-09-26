@@ -62,7 +62,6 @@ def index():
     # Calculate Account value
     account_value = cash + total_stock_value
 
-
     # Calculate cash percentage and total stock percentage
     cash_percentage = (cash / account_value) * 100
     total_stock_percentage = (total_stock_value / account_value) * 100
@@ -78,7 +77,6 @@ def index():
                            stocks=stocks,
                            cash=usd(cash),
                            cash_percentage=f"{cash_percentage:.2f}%")
-
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -138,7 +136,18 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
-    return apology("TODO")
+
+    # Set variables
+    user_id = session["user_id"]
+    transactions = db.execute("SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date", user_id)
+    
+    # Set table header
+    headers = ["Transaction date", "Transaction type", "Symbol", "Quantity", "Price", "Total amount"]
+
+    return render_template("history.html", 
+                            transactions=transactions, 
+                            headers=headers
+                            )
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -229,8 +238,6 @@ def register():
             return apology("username already exists", 403)
     else:
         return render_template("register.html")
-
-
 
 
 @app.route("/sell", methods=["GET", "POST"])

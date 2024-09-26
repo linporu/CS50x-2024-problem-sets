@@ -10,20 +10,24 @@
     <h2>Total stock value: {{ total_stock_value }}</h2>
     <p>Percentage: {{ total_stock_percentage }}</p>
     <table class="table">
-        <tr>
-            {% for header in headers %}
-                <th>{{ header }}</th>
-            {% endfor %}
-        </tr>
-        {% for stock in stocks %}
+        <thead>
             <tr>
-                <td>{{ stock.symbol }}</td>
-                <td>{{ stock.quantity }}</td>
-                <td>{{ stock.price | usd }}</td>
-                <td>{{ stock.total_amount | usd }}</td>
-                <td>{{ "%.2f"|format(stock.percentage) }}%</td>
+                {% for header in headers %}
+                    <th>{{ header }}</th>
+                {% endfor %}
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.symbol }}</td>
+                    <td>{{ stock.quantity }}</td>
+                    <td>{{ stock.price | usd }}</td>
+                    <td>{{ stock.total_amount | usd }}</td>
+                    <td>{{ "%.2f"|format(stock.percentage) }}%</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <h2>Cash value: {{ cash }}</h2>
     <p>Percentage: {{ cash_percentage }}</p>
