@@ -87,17 +87,17 @@ def buy():
 
         # Check symbol
         if not request.form.get("symbol"):
-            return apology("must provide stock symbol", 403)
+            return apology("must provide stock symbol", 400)
         if not lookup(request.form.get("symbol")):
-            return apology("Invalid symbol", 403)
+            return apology("Invalid symbol", 400)
         
         # Check shares
         if not request.form.get("shares"):
-            return apology("Must provide shares")
+            return apology("Must provide shares", 400)
         try:
             int(request.form.get("shares"))
         except ValueError:
-            return apology("Shares must be an integer")
+            return apology("Shares must be an integer", 400)
 
         # Set variables
         user_id = session["user_id"]
@@ -211,10 +211,10 @@ def quote():
     """Get stock quote."""
     if request.method == "POST":
         if not request.form.get("symbol"):
-            return apology("must provide stock symbol", 403)
+            return apology("must provide stock symbol", 400)
         quote = lookup(request.form.get("symbol"))
         if not quote:
-            return apology("Invalid symbol", 403)
+            return apology("Invalid symbol", 400)
         
         return render_template("quoted.html", quote=quote)
     else:
@@ -226,13 +226,13 @@ def register():
     """Register user"""
     if request.method == "POST":
         if not request.form.get("username"):
-            return apology("must provide username", 403)
+            return apology("must provide username", 400)
         elif not request.form.get("password"):
-            return apology("must provide password", 403)
+            return apology("must provide password", 400)
         elif not request.form.get("confirmation"):
-            return apology("must provide confirmation", 403)
+            return apology("must provide confirmation", 400)
         elif request.form.get("password") != request.form.get("confirmation"):
-            return apology("passwords do not match", 403)
+            return apology("passwords do not match", 400)
         
         hash = generate_password_hash(request.form.get("password"))
         
@@ -240,7 +240,7 @@ def register():
             db.execute("INSERT INTO users (username, hash, registered_at) VALUES (?, ?, CURRENT_TIMESTAMP)", request.form.get("username"), hash)
             return redirect("/login")
         except:
-            return apology("username already exists", 403)
+            return apology("username already exists", 400)
     else:
         return render_template("register.html")
 
@@ -294,6 +294,11 @@ def sell():
         db.execute("UPDATE positions SET quantity = quantity - ? WHERE user_id = ? AND symbol = ?", quantity, user_id, symbol)
         
         return redirect("/")
+    
     else:
-        return render_template("sell.html")
+        # Set variables
+        user_id = session["user_id"]
+        stocks = db.execute("SELECT symbol FROM positions WHERE user_id = ? AND quantity > 0", user_id)
+
+        return render_template("sell.html", stocks=stocks)
     
