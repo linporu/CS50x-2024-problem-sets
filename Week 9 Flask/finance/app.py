@@ -91,14 +91,20 @@ def buy():
         if not lookup(request.form.get("symbol")):
             return apology("Invalid symbol", 400)
         
-        # Check shares
+        # Check shares exist
         if not request.form.get("shares"):
             return apology("Must provide shares", 400)
+        
+        # Check number of shares is integer
         try:
-            int(request.form.get("shares"))
+            num_shares = float(request.form.get("shares"))
+            if num_shares.is_integer() and num_shares > 0:
+                pass
+            else:
+                return apology("Shares must be an integer greater than 0", 400)
         except ValueError:
-            return apology("Shares must be an integer", 400)
-
+            return apology("Shares must be an integer greater than 0", 400)
+        
         # Set variables
         user_id = session["user_id"]
         stock_bought = lookup(request.form.get("symbol"))
@@ -257,18 +263,24 @@ def sell():
         if not lookup(request.form.get("symbol")):
             return apology("Invalid symbol", 403)
         
+        # Check if position exists 
         user_positions = db.execute("SELECT symbol FROM positions WHERE user_id = ?", session["user_id"])  # 避免 user 無資料時 IndexError
         if not user_positions or request.form.get("symbol") not in [position["symbol"] for position in user_positions]:
             return apology("No such position", 403)
 
-        
-        # Check shares
+        # Check if number of shares exists
         if not request.form.get("shares"):
-            return apology("Must provide shares")
+            return apology("Must provide shares")   
+
+        # Check number of shares is integer
         try:
-            int(request.form.get("shares"))
+            num_shares = float(request.form.get("shares"))
+            if num_shares.is_integer() and num_shares > 0:
+                pass
+            else:
+                return apology("Shares must be an integer greater than 0", 400)
         except ValueError:
-            return apology("Shares must be an integer")
+            return apology("Shares must be an integer greater than 0", 400)
 
         # Set variables
         user_id = session["user_id"]
