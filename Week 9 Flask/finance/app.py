@@ -44,7 +44,7 @@ def index():
     # Set variables
     user_id = session["user_id"]
     cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
-    stocks = db.execute("SELECT symbol, quantity FROM positions WHERE user_id = ?", user_id)
+    stocks = db.execute("SELECT symbol, quantity FROM positions WHERE user_id = ? and quantity > 0", user_id)
 
     # Calculate total stock value and stock value percentages
     total_stock_value = 0
