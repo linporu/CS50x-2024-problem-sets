@@ -34,21 +34,51 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
 
-    # 暫時把所有變數定義為 0
-    account_value = 0
-    total_stock_value = 0
-    total_stock_percentage = 0
-    headers = []
-    stocks = []
-    stock_name = ""
-    stock_value = 0
-    stock_percentage = 0
-    share = 0
-    price = 0
-    cash_value = 0
-    cash_percentage = 0
+    # Check if user exists
+    if "user_id" not in session:
+        return redirect("/login")
+    if not db.execute("SELECT * FROM users WHERE id = ?", session["user_id"]):
+        session.clear()
+        return redirect("/login")
 
-    return render_template("index.html", account_value=account_value, total_stock_value=total_stock_value, total_stock_percentage=total_stock_percentage, headers=headers, stocks=stocks, stock_name=stock_name, share=share, price=price, stock_value=stock_value, stock_percentage=stock_percentage, cash_value=cash_value, cash_percentage=cash_percentage)
+    # Set variables
+    user_id = session["user_id"]
+    cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
+    stocks = db.execute("SELECT symbol, quantity FROM positions WHERE user_id = ?", user_id)
+
+    # Calculate total stock value and stock value percentages
+    total_stock_value = 0
+
+    for stock in stocks:
+        quote = lookup(stock["symbol"])
+        if quote:
+            stock["price"] = quote["price"]
+            stock["total_amount"] = stock["quantity"] * stock["price"]
+            total_stock_value += stock["total_amount"]
+            
+    for stock in stocks:
+        stock["percentage"] = (stock["total_amount"] / total_stock_value) * 100
+
+    # Calculate Account value
+    account_value = cash + total_stock_value
+
+
+    # Calculate cash percentage and total stock percentage
+    cash_percentage = (cash / account_value) * 100
+    total_stock_percentage = (total_stock_value / account_value) * 100
+
+    # Set table header
+    headers = ["Symbol", "Quantity", "Price", "Total Amount", "Percentage"]
+
+    return render_template("index.html", 
+                           account_value=usd(account_value),
+                           total_stock_value=usd(total_stock_value),
+                           total_stock_percentage=f"{total_stock_percentage:.2f}%",
+                           headers=headers,
+                           stocks=stocks,
+                           cash=usd(cash),
+                           cash_percentage=f"{cash_percentage:.2f}%")
+
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -78,7 +108,7 @@ def buy():
         quantity = int(request.form.get("shares"))
         price = stock_bought["price"]
         total_amount = price * quantity
-        cash = db.execute("SELECT cash FROM users WHERE id = ?", session["user_id"])[0]["cash"]
+        cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
 
         # Check cash is enough
         if cash < total_amount:
