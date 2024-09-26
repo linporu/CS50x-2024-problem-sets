@@ -139,7 +139,12 @@ def history():
 
     # Set variables
     user_id = session["user_id"]
-    transactions = db.execute("SELECT * FROM transactions WHERE user_id = ? ORDER BY transaction_date", user_id)
+    transactions = db.execute("""
+                              SELECT transaction_date, transaction_type, symbol, quantity, price, total_amount 
+                              FROM transactions 
+                              WHERE user_id = ? 
+                              ORDER BY transaction_date DESC
+                              """, user_id)
     
     # Set table header
     headers = ["Transaction date", "Transaction type", "Symbol", "Quantity", "Price", "Total amount"]
