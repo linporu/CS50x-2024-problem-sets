@@ -249,4 +249,51 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+
+        # Check symbol
+        if not request.form.get("symbol"):
+            return apology("must provide stock symbol", 403)
+        if not lookup(request.form.get("symbol")):
+            return apology("Invalid symbol", 403)
+        
+        user_positions = db.execute("SELECT symbol FROM positions WHERE user_id = ?", session["user_id"])  # 避免 user 無資料時 IndexError
+        if not user_positions or request.form.get("symbol") not in [position["symbol"] for position in user_positions]:
+            return apology("No such position", 403)
+
+        
+        # Check shares
+        if not request.form.get("shares"):
+            return apology("Must provide shares")
+        try:
+            int(request.form.get("shares"))
+        except ValueError:
+            return apology("Shares must be an integer")
+
+        # Set variables
+        user_id = session["user_id"]
+        stock_to_sell = lookup(request.form.get("symbol"))
+        symbol = stock_to_sell["symbol"]
+        quantity = int(request.form.get("shares"))
+        price = stock_to_sell["price"]
+        total_amount = price * quantity
+        position = db.execute("SELECT quantity FROM positions WHERE user_id = ? AND symbol = ?", user_id, symbol)[0]["quantity"]
+
+        # Check shares are enough
+        if position < quantity:
+            return apology("Not enough share")
+
+        # Record transaction
+        db.execute("INSERT INTO transactions (user_id, transaction_type, symbol, quantity, price, total_amount) VALUES (?, ?, ?, ?, ?, ?)", 
+                   user_id, "SELL", symbol, quantity, price, total_amount)
+        
+        # Update cash
+        db.execute("UPDATE users SET cash = cash + ? WHERE id = ?", total_amount, user_id)
+       
+        # Update position
+        db.execute("UPDATE positions SET quantity = quantity - ? WHERE user_id = ? AND symbol = ?", quantity, user_id, symbol)
+        
+        return redirect("/")
+    else:
+        return render_template("sell.html")
+    
